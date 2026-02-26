@@ -22,27 +22,43 @@ export default function CreateEventForm({ sports }: { sports: any[] }) {
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     const formSchema = eventSchema.extend({
-        startsAt: z.coerce.date().transform(d => d.toISOString()).pipe(z.string().datetime()),
-        endsAt: z.coerce.date().transform(d => d.toISOString()).pipe(z.string().datetime()),
-    }) as unknown as z.ZodType<EventFormValues>
+        startsAt: z.string().min(1, 'Start time is required'),
+        endsAt: z.string().min(1, 'End time is required'),
+    })
 
-    const form = useForm<EventFormValues>({
+    type FormValues = z.infer<typeof formSchema>
+
+    const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            title: '',
+            sportId: '',
+            description: '',
+            address: '',
             type: 'PUBLIC',
             requireApproval: false,
             guestsCanInvite: true,
             locationVisibility: 'CONFIRMED_ONLY',
+            startsAt: '',
+            endsAt: '',
         }
     })
 
-    async function onSubmit(data: EventFormValues) {
+    async function onSubmit(values: FormValues) {
         try {
             setIsSubmitting(true)
+
+            // Transform local datetime strings to ISO for the API
+            const payload = {
+                ...values,
+                startsAt: new Date(values.startsAt).toISOString(),
+                endsAt: new Date(values.endsAt).toISOString(),
+            }
+
             const res = await fetch('/api/events', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
+                body: JSON.stringify(payload),
             })
 
             if (!res.ok) {
