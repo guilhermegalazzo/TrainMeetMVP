@@ -105,14 +105,12 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
                 {canViewMap && (event.latitude && event.longitude || event.address) && (
                     <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 h-[400px]">
                         <h3 className="text-lg font-bold text-slate-800 mb-4">Location Map</h3>
-                        <div className="w-full h-[300px] rounded-xl overflow-hidden relative bg-slate-100">
-                            <EventMap
-                                eventId={event.id}
-                                initLat={event.latitude || 0}
-                                initLng={event.longitude || 0}
-                                startsAt={event.startsAt}
-                                locationVisibility={event.locationVisibility}
-                            />
+                        <div className="w-full h-[300px] rounded-xl overflow-hidden relative bg-slate-100 flex flex-col items-center justify-center p-6 text-center border-2 border-dashed border-slate-300">
+                            <MapPin className="text-slate-400 w-12 h-12 mb-4" />
+                            <h3 className="font-semibold text-slate-700">Interactive Map View</h3>
+                            <p className="text-slate-500 text-sm mt-2 max-w-[200px]">
+                                (Mapbox rendering is temporarily disabled. Live location would be shown here.)
+                            </p>
                         </div>
                     </div>
                 )}
