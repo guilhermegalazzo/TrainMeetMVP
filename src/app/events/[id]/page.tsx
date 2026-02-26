@@ -5,7 +5,6 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Calendar, Clock, MapPin, Users } from 'lucide-react'
 import { format } from 'date-fns'
-import EventMap from './_components/event-map'
 import PresenceButtons from './_components/presence-buttons'
 
 export default async function EventDetailPage({ params }: { params: Promise<{ id: string }> }) {
