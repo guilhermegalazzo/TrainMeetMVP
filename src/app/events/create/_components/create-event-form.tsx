@@ -21,12 +21,10 @@ export default function CreateEventForm({ sports }: { sports: any[] }) {
     const [step, setStep] = useState(1)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
-    // We add 'coerce' to dates for standard HTML datetime-local inputs
-    const formSchema = z.object({
-        ...eventSchema.shape,
+    const formSchema = eventSchema.extend({
         startsAt: z.coerce.date().transform(d => d.toISOString()).pipe(z.string().datetime()),
         endsAt: z.coerce.date().transform(d => d.toISOString()).pipe(z.string().datetime()),
-    })
+    }) as unknown as z.ZodType<EventFormValues>
 
     const form = useForm<EventFormValues>({
         resolver: zodResolver(formSchema),

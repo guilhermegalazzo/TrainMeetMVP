@@ -25,9 +25,9 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
 
     if (!event) return redirect('/explore')
 
-    let currentUser = null
-    let currentParticipant = null
-    let hasPendingInvite = false
+    let currentUser: any = null
+    let currentParticipant: any = null
+    let hasPendingInvite: boolean = false
 
     if (clerkId) {
         currentUser = await prisma.user.findUnique({ where: { clerkId } })
