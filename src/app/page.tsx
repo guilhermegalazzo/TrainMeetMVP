@@ -10,9 +10,9 @@ import { format } from 'date-fns'
 export default async function Home() {
   const { userId: clerkId } = await auth()
 
-  let user = null
-  let upcomingEvents = []
-  let pendingInvites = []
+  let user: any = null
+  let upcomingEvents: any[] = []
+  let pendingInvites: any[] = []
 
   if (clerkId) {
     user = await prisma.user.findUnique({
