@@ -14,16 +14,23 @@ import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'sonner'
 
-type EventFormValues = z.infer<typeof eventSchema>
-
 export default function CreateEventForm({ sports }: { sports: any[] }) {
     const router = useRouter()
     const [step, setStep] = useState(1)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const formSchema = eventSchema.extend({
+    // Explicit schema to avoid inference issues with .default() and RHF
+    const formSchema = z.object({
+        title: z.string().min(3, 'Title is required'),
+        description: z.string().optional(),
+        sportId: z.string().min(1, 'Sport is required'),
         startsAt: z.string().min(1, 'Start time is required'),
         endsAt: z.string().min(1, 'End time is required'),
+        address: z.string().min(1, 'Address is required'),
+        type: z.enum(['PUBLIC', 'PRIVATE', 'GROUP']),
+        requireApproval: z.boolean(),
+        guestsCanInvite: z.boolean(),
+        locationVisibility: z.enum(['CONFIRMED_ONLY', 'ALL', 'NONE']),
     })
 
     type FormValues = z.infer<typeof formSchema>
@@ -32,22 +39,22 @@ export default function CreateEventForm({ sports }: { sports: any[] }) {
         resolver: zodResolver(formSchema),
         defaultValues: {
             title: '',
-            sportId: '',
             description: '',
+            sportId: '',
+            startsAt: '',
+            endsAt: '',
             address: '',
             type: 'PUBLIC',
             requireApproval: false,
             guestsCanInvite: true,
             locationVisibility: 'CONFIRMED_ONLY',
-            startsAt: '',
-            endsAt: '',
         }
     })
 
     async function onSubmit(values: FormValues) {
         try {
             setIsSubmitting(true)
-
+            
             // Transform local datetime strings to ISO for the API
             const payload = {
                 ...values,
